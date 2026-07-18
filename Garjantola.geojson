@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "Garjantola",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1 }, "geometry": { "type": "Point", "coordinates": [ 88.905564006573542, 21.936962310026605 ] } }
+]
+}

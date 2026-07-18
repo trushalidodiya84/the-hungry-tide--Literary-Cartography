@@ -1,0 +1,31 @@
+{
+"type": "FeatureCollection",
+"name": "All places",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 22, "name": "Anpur", "category": null, "descriptio": null }, "geometry": { "type": "Point", "coordinates": [ 88.870806519305617, 22.091963328311035 ] } },
+{ "type": "Feature", "properties": { "id": 1, "name": "Satjelia", "category": "Village", "descriptio": "Hemilton estate, Horen and Kusum's village," }, "geometry": { "type": "Point", "coordinates": [ 88.878560392837869, 22.15874317093034 ] } },
+{ "type": "Feature", "properties": { "id": 2, "name": "Gosaba", "category": "Village", "descriptio": "Hemilton Estate" }, "geometry": { "type": "Point", "coordinates": [ 88.805443270437777, 22.167958774211755 ] } },
+{ "type": "Feature", "properties": { "id": 3, "name": "Kumirmari", "category": "Village", "descriptio": "Normal got invitiation from a School to Kumirmari" }, "geometry": { "type": "Point", "coordinates": [ 88.935236978840337, 22.205215706026259 ] } },
+{ "type": "Feature", "properties": { "id": 4, "name": "Seattle", "category": "City", "descriptio": "Piya's Hometown, the second world war, they moved to America" }, "geometry": { "type": "Point", "coordinates": [ -122.331195131372723, 47.605940609984543 ] } },
+{ "type": "Feature", "properties": { "id": 5, "name": "Canning", "category": "City", "descriptio": "threshold to Sundarbans" }, "geometry": { "type": "Point", "coordinates": [ 88.660443055357277, 22.3131060077834 ] } },
+{ "type": "Feature", "properties": { "id": 6, "name": "Champahati", "category": "Village", "descriptio": "Way to Canning" }, "geometry": { "type": "Point", "coordinates": [ 88.492854972017582, 22.40426160496629 ] } },
+{ "type": "Feature", "properties": { "id": 7, "name": "DHakuria Station", "category": "Railway Station", "descriptio": "Piya and Kanai Met at Dhakuria Station While Piya was waiting for the train to C" }, "geometry": { "type": "Point", "coordinates": [ 88.371182101132632, 22.509152925178519 ] } },
+{ "type": "Feature", "properties": { "id": 8, "name": "Burma(Now Myanmar)", "category": "Country", "descriptio": "Piya's father, The Red Flag rebellion, Irrawaddy Dolphins, Anderson" }, "geometry": { "type": "Point", "coordinates": [ 96.433502276433217, 21.242103469703451 ] } },
+{ "type": "Feature", "properties": { "id": 9, "name": "Assam", "category": "State", "descriptio": "Piya's Mother is from Assam" }, "geometry": { "type": "Point", "coordinates": [ 92.739640728706945, 26.539869474632965 ] } },
+{ "type": "Feature", "properties": { "id": 10, "name": "Phnom Penh", "category": "City", "descriptio": "Fresh water Orcaellla Dolphin Pools that Piya Traced during her research" }, "geometry": { "type": "Point", "coordinates": [ 104.943741119496323, 11.557890101011516 ] } },
+{ "type": "Feature", "properties": { "id": 11, "name": "Laos Border", "category": "River pools", "descriptio": "fresh water Orcaellla" }, "geometry": { "type": "Point", "coordinates": [ 105.981130706908473, 13.927406262935593 ] } },
+{ "type": "Feature", "properties": { "id": 12, "name": "Village North to Mandalay", "category": "Village North to Mandalay", "descriptio": "Dolphin were doing hunting in pools on the Irrawaddy river" }, "geometry": { "type": "Point", "coordinates": [ 96.062694616992417, 21.992686911443027 ] } },
+{ "type": "Feature", "properties": { "id": 13, "name": "New Delhi", "category": "City", "descriptio": "Kanai lives and works here" }, "geometry": { "type": "Point", "coordinates": [ 77.209135251110936, 28.60876204258167 ] } },
+{ "type": "Feature", "properties": { "id": 13, "name": "Odisha", "category": "State", "descriptio": "People came from Odisha to Hamilton Estate" }, "geometry": { "type": "Point", "coordinates": [ 84.452436560967882, 20.441359087969126 ] } },
+{ "type": "Feature", "properties": { "id": 14, "name": "Bangladesh", "category": "Country", "descriptio": "Bangladesh Partition" }, "geometry": { "type": "Point", "coordinates": [ 90.364400100140742, 24.181118795157563 ] } },
+{ "type": "Feature", "properties": { "id": 16, "name": "Basonti", "category": "A more easy way to reach Lusibari.", "descriptio": null }, "geometry": { "type": "Point", "coordinates": [ 88.737259473525285, 22.191589575153817 ] } },
+{ "type": "Feature", "properties": { "id": 15, "name": "Lusibari", "category": "Literary Settlement", "descriptio": "Fictional settlement in The Hungry Tide. Reconstructed from references" }, "geometry": { "type": "Point", "coordinates": [ 88.907290090442444, 22.08967529429955 ] } },
+{ "type": "Feature", "properties": { "id": 16, "name": "Morichjhapi", "category": "Settlement Island", "descriptio": "Illegal Settlement" }, "geometry": { "type": "Point", "coordinates": [ 88.933448035747119, 22.105990777108705 ] } },
+{ "type": "Feature", "properties": { "id": 17, "name": "Raipur", "category": "Refugee Resettlemt camp", "descriptio": "Primary Government resettlement camp for Bangladeshi Refugee" }, "geometry": { "type": "Point", "coordinates": [ 81.638851236179903, 21.251781361142662 ] } },
+{ "type": "Feature", "properties": { "id": 18, "name": "SOnagachhi", "category": "City", "descriptio": "Red light area where dilip sold Kusum's Mother" }, "geometry": { "type": "Point", "coordinates": [ 88.397734521156153, 22.337314584333598 ] } },
+{ "type": "Feature", "properties": { "id": 19, "name": "Dhaka", "category": "NIrmal is from dhaka, Came to Calcutta during Partition", "descriptio": null }, "geometry": { "type": "Point", "coordinates": [ 90.412210244490879, 23.805174391444783 ] } },
+{ "type": "Feature", "properties": { "id": 20, "name": "Kolkata Botanic Garden", "category": "Botanic Garden", "descriptio": "Botanical Garden in Calcutta" }, "geometry": { "type": "Point", "coordinates": [ 88.289232716850819, 22.558199437658477 ] } },
+{ "type": "Feature", "properties": { "id": 21, "name": "Malabar Coast", "category": "coast", "descriptio": "a stranded whale - Blynth" }, "geometry": { "type": "Point", "coordinates": [ -121.976793464525599, 37.353073309931332 ] } }
+]
+}
