@@ -1,1 +1,1657 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>The Hungry Tide - Literary Cartography</title>
 
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+#map{
+    height:95vh;
+}
+</style>
+
+</head>
+<body>
+
+<h3>The Hungry Tide – Literary Cartography</h3>
+
+<div id="map"></div>
+
+<script>
+
+/* ================= BASE MAP ================= */
+
+var map = L.map('map').setView([22.0,89.0],6);
+
+L.tileLayer(
+'https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',
+{
+ attribution:'© OpenStreetMap © CARTO'
+}
+).addTo(map);
+    
+/* ================= MAIN THEMATIC LAYERS ================= */
+
+var ecologyLayer = L.layerGroup().addTo(map);
+
+var migrationLayer = L.layerGroup().addTo(map);
+
+var memoryLayer = L.layerGroup().addTo(map);
+
+var mythLayer = L.layerGroup().addTo(map);  
+    
+/* ================= ECOLOGY SUBLAYERS ================= */
+
+var dolphinLayer = L.layerGroup();
+
+    /* Coastal Irrawaddy Dolphin Distribution */
+
+L.polygon([
+    [20.0, 80.0],
+    [22.0, 95.0],
+    [18.0, 115.0],
+    [10.0, 135.0],
+    [-15.0, 140.0],
+    [-10.0, 105.0],
+    [5.0, 85.0]
+],{
+    color:"#2E7D32",
+fillColor:"#66BB6A",
+    fillOpacity:0.25,
+    weight:2
+}).addTo(dolphinLayer)
+.bindPopup(
+"<b>🐬 Coastal Irrawaddy Dolphin Distribution</b><br>" +
+"Coastal populations of <i>Orcaella brevirostris</i> occur across the waters of South and Southeast Asia and extend to Northern Australia."
+);
+
+/* ================= DOLPHIN RIVER NETWORKS ================= */
+
+var riverFiles = [
+
+[
+"Ganga.geojson",
+"🐬 Ganga River",
+"The Ganga river system historically supported populations of the Shushuk (river dolphin)."
+],
+
+[
+"Indus.geojson",
+"🐬 Indus River",
+"The Sindhu (Indus) river system was historically associated with river dolphin populations."
+],
+
+[
+"Irrawaddy.geojson",
+"🐬 Irrawaddy River",
+"One of the principal freshwater habitats of the Irrawaddy dolphin in Southeast Asia."
+],
+
+[
+"Mekong.geojson",
+"🐬 Mekong River",
+"A major refuge for the remaining freshwater populations of the Irrawaddy dolphin."
+],
+
+[
+"Brahmaputra.geojson",
+"🐬 Brahmaputra River",
+"Part of the larger riverine ecological network connected to South Asian freshwater dolphin habitats."
+]
+
+];
+
+riverFiles.forEach(function(river){
+
+fetch(river[0])
+.then(response => response.json())
+.then(data => {
+
+L.geoJSON(data,{
+style:{
+color:"#1f78b4",
+weight:2,
+opacity:0.8
+}
+})
+.bindPopup(
+"<b>"+river[1]+"</b><br>" +
+river[2]
+)
+.addTo(dolphinLayer);
+
+});
+
+});
+ 
+
+var tigerLayer = L.layerGroup();
+
+var mangroveLayer = L.layerGroup();
+
+var tidalPoolLayer = L.layerGroup();
+
+var ecologicalCorridorLayer = L.layerGroup();
+
+var stormLayer = L.layerGroup();
+
+/* Attach to Ecology */
+
+ecologyLayer.addLayer(dolphinLayer);
+
+ecologyLayer.addLayer(tigerLayer);
+
+ecologyLayer.addLayer(mangroveLayer);
+    /* ================= MANGROVE HABITAT ================= */
+
+L.polygon([
+    [22.35,88.55],
+    [22.30,89.25],
+    [22.10,89.60],
+    [21.75,89.70],
+    [21.50,89.45],
+    [21.45,88.90],
+    [21.65,88.55],
+    [22.00,88.45]
+],{
+    color:"#2E7D32",
+fillColor:"#66BB6A",
+    fillOpacity:0.20,
+    weight:2
+})
+.addTo(mangroveLayer)
+.bindPopup(
+"<b>🌿 Sundarbans Mangrove Ecosystem</b><br>" +
+"The world's largest mangrove forest. A dynamic ecological zone shaped by tides, sedimentation, salinity, and biodiversity. The mangrove habitat forms the ecological foundation of Amitav Ghosh's <i>The Hungry Tide</i>."
+);
+
+ecologyLayer.addLayer(tidalPoolLayer);
+    /* ================= TIDE COUNTRY ================= */
+
+L.polygon([
+    [22.40,88.60],
+    [22.30,89.50],
+    [21.90,89.80],
+    [21.45,89.60],
+    [21.35,88.80],
+    [21.60,88.40]
+],{
+    color:"#2E7D32",
+fillColor:"#66BB6A",
+    fillOpacity:0.15,
+    weight:2,
+    dashArray:"5,5"
+})
+.addTo(tidalPoolLayer)
+.bindPopup(
+"<b>🌊 Tide Country</b><br>" +
+"A dynamic estuarine landscape shaped by daily tides, erosion, sedimentation, and shifting waterways. The tide country is the central ecological space of Amitav Ghosh's <i>The Hungry Tide</i>."
+);
+
+ecologyLayer.addLayer(ecologicalCorridorLayer);
+
+ecologyLayer.addLayer(stormLayer);
+    /* ================= LAYER CONTROL ================= */
+/* ================= CANNING : ENVIRONMENTAL HISTORY ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Canning"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#8B4513",
+                        fillColor:"#CD853F",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(
+                        "<b>⛈️ Port Canning: Ecology versus Empire</b><br>" +
+                        "A colonial port project established on the Matla River. " +
+                        "Henry Piddington warned that the site was vulnerable to cyclones and tidal surges and emphasized the protective role of the Sundarbans mangroves. " +
+                        "In 1867 a devastating cyclone struck the settlement and the port never recovered. " +
+                        "The episode illustrates the conflict between colonial ambition and the ecological realities of the Sundarbans."
+                    );
+
+                }
+
+            }).addTo(ecologyLayer);
+
+        }
+
+    });
+
+});
+    /* ================= ASSAM : ECOLOGY ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Assam"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#006400",
+                        fillColor:"#32CD32",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+                    <b>🌿 Assam</b><br><br>
+
+                    Assam is associated with the Brahmaputra River, one of South Asia's major river systems and an important habitat for freshwater biodiversity, including the Gangetic River Dolphin.
+
+                    <br><br>
+
+                    In <i>The Hungry Tide</i>, Piya's mother is from Assam and lived near the banks of the Brahmaputra, linking Piya's family history to the riverine ecologies of South Asia.
+                    `);
+
+                }
+
+            }).addTo(ecologyLayer);
+
+        }
+
+    });
+
+});
+/* ================= MORICHHJHAPI : ECOLOGY ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Morichjhapi"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#006400",
+                        fillColor:"#32CD32",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+<b>🌿 Morichjhapi</b><br><br>
+
+Located near Lusibari on the banks of the Bagna River, Morichjhapi was a forested island within the Sundarbans Reserved Forest. The island became the site of a major conflict between human settlement and environmental conservation.
+
+<br><br>
+
+In 1979, thousands of refugees displaced from East Pakistan/Bangladesh and later resettled in Dandakaranya migrated to Morichjhapi in search of land and livelihood. However, the authorities declared the island a protected forest reserved for tiger conservation and ordered the settlers' eviction.
+
+<br><br>
+
+Morichjhapi highlights the complex relationship between ecology, conservation policies, human survival, and the fragile mangrove environment of the Sundarbans. In <i>The Hungry Tide</i>, it serves as a powerful example of how environmental space is shaped by both natural forces and political decisions.
+`);
+
+                }
+
+            }).addTo(ecologyLayer);
+
+        }
+
+    });
+
+});
+
+    /* ================= MORICHHJHAPI : MIGRATION ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Morichjhapi"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#8B0000",
+                        fillColor:"#FF4444",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+<b>🚶 Morichjhapi</b><br><br>
+
+In 1979, thousands of refugees displaced by Partition and later confined to government resettlement camps in Dandakaranya migrated to Morichjhapi in the hope of rebuilding their lives in Bengal.
+
+<br><br>
+
+The island became a symbol of displacement, migration, exile, and the search for homeland. The settlers attempted to create a self-sustaining community, dividing the island into zones and cultivating the land.
+
+<br><br>
+
+Morichjhapi represents one of the most significant migration narratives in <i>The Hungry Tide</i>, linking Partition, refugee movements, and the struggle for belonging.
+`);
+
+                }
+
+            }).addTo(migrationLayer);
+
+        }
+
+    });
+
+});
+    /* ================= MORICHHJHAPI : MEMORY ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Morichjhapi"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#00008B",
+                        fillColor:"#4169E1",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+<b>📖 Morichjhapi</b><br><br>
+
+Morichjhapi is a site of historical and cultural memory in <i>The Hungry Tide</i>. Through Nirmal's journals, Kusum's experiences, and the recollections of local inhabitants, the island preserves memories of displacement, suffering, resistance, and loss.
+
+<br><br>
+
+Nirmal believed that the events at Morichjhapi should leave 'some trace, some hold upon the memory of the world.' His writings transform the island into a memorial landscape where personal stories intersect with larger histories of Partition and state violence.
+
+<br><br>
+
+Morichjhapi stands as a powerful reminder of forgotten histories within the Sundarbans.
+`);
+
+                }
+
+            }).addTo(memoryLayer);
+
+        }
+
+    });
+
+
+    });
+
+    /* ================= MALTA RIVER ================= */
+
+fetch("Malta River.geojson")
+.then(response => response.json())
+.then(data => {
+
+    L.geoJSON(data,{
+        style:{
+            color:"#1976d2",
+            weight:3,
+            opacity:0.85
+        }
+    })
+    .bindPopup(
+        "<b>Malta River</b><br>" +
+        "Ecological River"
+    )
+    .addTo(ecologyLayer);
+
+});
+
+/* ================= GARJANTOLA ================= */
+
+fetch("Garjantola.geojson")
+.then(response => response.json())
+.then(data => {
+
+    L.geoJSON(data, {
+
+        pointToLayer: function(feature, latlng){
+            return L.circleMarker(latlng,{
+                radius:10,
+                color:"#006400",
+                fillColor:"#32CD32",
+                fillOpacity:0.8,
+                weight:2
+            });
+        },
+
+        onEachFeature: function(feature, layer){
+
+           layer.bindPopup(`
+             <b>🌿 Garjantola</b><br><br>
+
+             An ecologically significant site in the Sundarbans associated with tidal pools, dolphin habitat, and Bon Bibi traditions. In <i>The Hungry Tide</i>, Garjantola serves as an important field site for Piya's dolphin research and reflects local ecological knowledge.
+
+              <br><br>
+
+           According to local memory narrated in the novel, Kusum's father survived a tiger attack in this region. In gratitude for his survival, he built a shrine dedicated to Bon Bibi, the protective guardian of the Sundarbans. The shrine became an important symbol of faith and coexistence between humans and the dangerous wilderness.
+
+            <br><br>
+
+        <b>Possible Origins of the Name:</b>
+
+              <ul>
+             <li><b>Garjan Tree (<i>Rhizophora apiculata</i>):</b> The name may derive from the Garjan mangrove tree, a species adapted to the tidal forests of the Sundarbans. These trees help stabilize riverbanks, protect embankments from tidal surges, and support the region's biodiversity.</li>
+
+              <li><b>Garjan (Roar):</b> The name may also refer to the roar of tigers, reflecting the area's proximity to wilderness associated with Dokkhin Rai, the tiger deity of Sundarbans folklore.</li>
+                </ul>
+
+                Garjantola thus represents a convergence of mangrove ecology, dolphin habitat, tiger territory, mythology, and cultural memory within the tide country.
+             `);
+
+        }
+
+    }).addTo(ecologyLayer);
+
+});
+
+   
+    /* ================= PIYA FAMILY MIGRATION ================= */
+
+    var piyaFamilyMigration = L.polyline([
+    [21.24210346970345, 96.43350227643321],   // Burma
+    [22.55819943765848, 88.28923271685082],   // Kolkata
+    [47.60594060998454, -122.33119513137272]  // Seattle
+],{
+    color:"#FF4444",
+    weight:3,
+    dashArray:"8,8"
+});
+    piyaFamilyMigration.bindPopup(`
+<b>🚶 Piya's Family Migration Route</b><br><br>
+
+Burma (Myanmar) → Calcutta (India) → Seattle (USA)
+
+<br><br>
+
+Piya's grandparents were Bengali settlers in Burma. During the upheavals of the Second World War, the family migrated to India as refugees and later settled in the United States.
+
+<br><br>
+
+This route illustrates a transnational history of displacement and migration that connects South Asia to the global Bengali diaspora. Piya's later return to the Sundarbans represents a symbolic reconnection with the landscapes and histories from which her family had once been displaced.
+`);
+    migrationLayer.addLayer(piyaFamilyMigration);
+
+
+fetch("dandakaranya.geojson")
+.then(response => response.json())
+.then(data => {
+
+    L.geoJSON(data,{
+
+        style:{
+            color:"#8B4513",
+            weight:2,
+            fillOpacity:0.3
+        },
+
+        onEachFeature:function(feature,layer){
+
+            layer.bindPopup(`
+<b>🚶 Dandakaranya Resettlement Region</b><br><br>
+
+The Dandakaranya Project was established by the Indian government to resettle refugees displaced from East Pakistan (later Bangladesh) after Partition.
+
+<br><br>
+
+Thousands of refugee families were relocated to camps in Central India, hundreds of kilometres away from Bengal. Although the government described the scheme as rehabilitation, many settlers felt culturally isolated and disconnected from their homeland.
+
+<br><br>
+
+Several refugees viewed the camps as restrictive spaces where movement was closely monitored. Many believed that they had little freedom to leave and rebuild their lives elsewhere.
+
+<br><br>
+
+By 1979, growing dissatisfaction led thousands of refugees to leave Dandakaranya collectively. Hoping to return to Bengal and establish a permanent settlement, they migrated to the Sundarbans and occupied Morichjhapi Island.
+
+<br><br>
+
+Dandakaranya therefore represents a crucial stage in the migration history of the Morichjhapi settlers, linking displacement, state resettlement policies, and the search for belonging.
+`);
+        }
+
+    }).addTo(migrationLayer);
+
+});
+/* ================= BANGLADESH : MIGRATION ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Bangladesh"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#8B0000",
+                        fillColor:"#FF6B6B",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+<b>🚶 Bangladesh</b><br><br>
+
+Bangladesh represents the point of origin for many refugees whose journeys form a central migration narrative in <i>The Hungry Tide</i>.
+
+<br><br>
+
+Following the Partition of India in 1947 and later political upheavals in East Pakistan (now Bangladesh), thousands of Bengali Hindus were displaced from their homes and sought refuge in India.
+
+<br><br>
+
+Many of these refugees were later relocated to government resettlement camps in the Dandakaranya region of Central India. Dissatisfied with life in the camps and longing to return to Bengal, thousands migrated again and eventually settled in Morichjhapi in 1979.
+
+<br><br>
+
+Bangladesh therefore marks the beginning of a migration route that links displacement, exile, resettlement, and the search for belonging in <i>The Hungry Tide</i>.
+`);
+                }
+
+            }).addTo(migrationLayer);
+
+        }
+
+    });
+
+});    
+
+    /* ================= RAIPUR : CENTRAL REFUGEE CAMP ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Raipur"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#8B0000",
+                        fillColor:"#FF4444",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+<b>🚶 Raipur Refugee Camp</b><br><br>
+
+Raipur served as an important administrative centre within the Dandakaranya rehabilitation scheme established for refugees displaced from East Pakistan (later Bangladesh).
+
+<br><br>
+
+After Partition, thousands of Bengali refugees were transported to camps across Central India. Raipur functioned as a major transit and administrative hub through which many refugee families passed before being settled in different parts of the Dandakaranya region.
+
+<br><br>
+
+For many refugees, the journey to Raipur marked a second displacement. Removed from Bengal's familiar language, culture, rivers, and agricultural environment, they faced difficult living conditions and an uncertain future.
+
+<br><br>
+
+In <i>The Hungry Tide</i>, the history of refugee migration to Morichjhapi is closely connected to the larger Dandakaranya resettlement programme. Raipur therefore represents an important stage in the migration route from Bangladesh to Dandakaranya and eventually to Morichjhapi.
+`);
+                }
+
+            }).addTo(migrationLayer);
+
+        }
+
+    });
+
+});
+  /* ================= REFUGEE MIGRATION ROUTES ================= */
+
+/* Bangladesh → Raipur */
+
+var route1 = L.polyline([
+    [23.6850, 90.3563],   // Bangladesh
+    [21.2514, 81.6296]    // Raipur
+],{
+    color:"#FF4444",
+    weight:3,
+    dashArray:"6,6"
+});
+
+route1.bindPopup(`
+<b>🚶 Refugee Migration Route I</b><br><br>
+Bangladesh → Raipur
+<br><br>
+Following displacement from East Pakistan (later Bangladesh), many refugee families were transported to Central India.
+`);
+
+migrationLayer.addLayer(route1);
+
+
+/* Raipur → Dandakaranya */
+
+var route2 = L.polyline([
+    [21.2514, 81.6296],   // Raipur
+    [19.0, 82.0]          // Dandakaranya region
+],{
+    color:"#FF4444",
+    weight:3,
+    dashArray:"6,6"
+});
+
+route2.bindPopup(`
+<b>🚶 Refugee Migration Route II</b><br><br>
+Raipur → Dandakaranya
+<br><br>
+Refugees were relocated from transit centres to rehabilitation camps throughout the Dandakaranya Project area.
+`);
+
+migrationLayer.addLayer(route2);
+
+
+/* Dandakaranya → Morichjhapi */
+
+var route3 = L.polyline([
+    [19.0, 82.0],         // Dandakaranya
+    [22.10, 88.93]        // Morichjhapi
+],{
+    color:"#FF4444",
+    weight:3,
+    dashArray:"6,6"
+});
+
+route3.bindPopup(`
+<b>🚶 Refugee Migration Route III</b><br><br>
+Dandakaranya → Morichjhapi
+<br><br>
+In 1979 thousands of refugees left Dandakaranya and travelled to the Sundarbans, establishing a settlement at Morichjhapi.
+`);
+
+migrationLayer.addLayer(route3);
+    /* ================= SATJELIA : MEMORY ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Satjelia"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#00008B",
+                        fillColor:"#4169E1",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+<b>📖 Satjelia</b><br><br>
+
+Satjelia is one of the inhabited islands of the Sundarbans and serves as an important site of social memory in <i>The Hungry Tide</i>. It is associated with the life of Kusum, whose experiences reveal the hardships faced by marginalized communities in the tide country.
+
+<br><br>
+
+Kusum's father died while collecting firewood in a protected forest area. The family received no compensation, leaving her mother vulnerable to poverty and exploitation.
+
+<br><br>
+
+After being promised employment in Calcutta by Dilip Choudhury, Kusum's mother left Satjelia in search of work. Instead, she was trafficked into a brothel in Sonagachhi. Kusum remained behind and was later brought to Lusibari, where she was placed under the protection of the Women's Union.
+
+<br><br>
+
+Satjelia preserves memories of environmental hardship, gendered vulnerability, and community resilience in the Sundarbans.
+`);
+                }
+
+            }).addTo(memoryLayer);
+
+        }
+
+    });
+
+});
+
+    /* ================= SONAGACHHI : MIGRATION ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "SOnagachhi"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#8B0000",
+                        fillColor:"#FF4444",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+<b>🚶 Sonagachhi</b><br><br>
+
+Located in North Calcutta, Sonagachhi became one of South Asia's largest red-light districts during the colonial and postcolonial periods.
+
+<br><br>
+
+In <i>The Hungry Tide</i>, Kusum's mother was deceived by promises of employment and transported from the Sundarbans to Calcutta, where she was sold into prostitution.
+
+<br><br>
+
+The episode reveals how poverty, widowhood, and social vulnerability exposed many women from the Sundarbans to trafficking networks that connected remote islands with urban centres.
+`);
+                }
+
+            }).addTo(migrationLayer);
+
+        }
+
+    });
+
+});
+/* ================= SATJELIA → SONAGACHHI : TRAFFICKING ROUTE ================= */
+
+var kusumMotherRoute = L.polyline([
+    [22.15620, 88.87887],   // Satjelia
+    [22.33491, 88.39903]    // Sonagachhi
+],{
+    color:"#8B0000",
+    weight:3,
+    dashArray:"8,8"
+});
+
+kusumMotherRoute.bindPopup(`
+<b>🚶 Gendered Migration and Trafficking Route</b><br><br>
+
+Satjelia → Sonagachhi
+
+<br><br>
+
+After the death of her husband, Kusum's mother became economically vulnerable. Dilip Choudhury promised her employment in Calcutta and persuaded her to leave Satjelia.
+
+<br><br>
+
+Instead of receiving legitimate work, she was trafficked into a brothel in Sonagachhi, one of the largest red-light districts in Calcutta. Dilip concealed the truth from Kusum and the villagers, claiming that she was employed in a respectable household.
+
+<br><br>
+
+This route illustrates how poverty, widowhood, and social marginalization exposed many women from the Sundarbans to trafficking networks linking remote islands with urban centres.
+
+<br><br>
+
+In <i>The Hungry Tide</i>, this episode reveals the gendered dimensions of migration, displacement, and exploitation that often remain absent from official histories.
+`);
+
+migrationLayer.addLayer(kusumMotherRoute);
+    
+/* ================= LUSIBARI : MEMORY ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Lusibari"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#00008B",
+                        fillColor:"#4169E1",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+<b>📖 Lusibari</b><br><br>
+
+Lusibari is one of the principal inhabited islands of the Sundarbans and a central setting in <i>The Hungry Tide</i>. Situated amidst a network of rivers and tidal channels, it embodies the intertwined histories of settlement, migration, memory, and survival in the tide country.
+
+<br><br>
+
+The island formed part of Sir Daniel Hamilton's cooperative experiment. Beginning in 1903, Hamilton acquired nearly 10,000 acres of the Sundarbans, including Gosaba, Satjelia, Rangabelia, Lusibari, Jameshpur, Annapur, and Emilybari. The region consisted largely of mudflats and mangrove forests, vulnerable to tides, cyclones, tigers, crocodiles, and venomous snakes. Hamilton encouraged settlers from Bengal, Orissa, and the Santhal Parganas to build a new society based on cooperation rather than caste or communal divisions.
+
+<br><br>
+
+Lusibari later became home to Nirmal and Nilima. Nirmal was born in Dhaka and moved to Calcutta as a student. After Partition, he was separated from his family and remained in the city, where he taught English at Ashutosh College. Nilima was one of his students. Following their marriage, they sought refuge from political turmoil and moved to Lusibari, where Nirmal accepted a teaching position in the local school.
+
+<br><br>
+
+Nirmal's life was shaped by the political upheavals of postwar Asia. He participated in left-wing intellectual circles and became associated with revolutionary movements that emerged across Asia, including struggles in Burma and other anti-colonial insurgencies. His political activities led to detention and surveillance, contributing to his eventual withdrawal from urban political life.
+
+<br><br>
+
+Nilima's experiences in Lusibari drew her attention to the condition of women in the Sundarbans. The dangers of fishing, storms, and tiger attacks frequently left women widowed at a young age. Widowhood often brought economic hardship, dependence, and exploitation. In response, Nilima established the Women's Union and later the Badabon Development Trust, creating opportunities for education, healthcare, and social support for local women.
+
+<br><br>
+
+Through the histories of Hamilton, Nirmal, and Nilima, Lusibari emerges as a place where utopian dreams, political ideals, environmental challenges, and human resilience converge within the ever-changing landscape of the Sundarbans.
+`);
+                }
+
+            }).addTo(memoryLayer);
+
+        }
+
+    });
+
+});
+    /* ================= KUMIRMARI : MEMORY ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Kumirmari"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#00008B",
+                        fillColor:"#4169E1",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+<b>📖 Kumirmari</b><br><br>
+
+Kumirmari occupies an important place in the memory narrative of <i>The Hungry Tide</i>. After retiring from teaching, Nirmal accepted an invitation to visit a school in Kumirmari and travelled there with Horen.
+
+<br><br>
+
+During the journey, Nirmal read passages from François Bernier's seventeenth-century travel account. Horen connected Bernier's descriptions of moonlit rainbows, salt-makers, storms, and river journeys to places within the Sundarbans, blending historical records with local memory and knowledge.
+
+<br><br>
+
+It was in Kumirmari that Nirmal first heard of the refugee settlement at Morichjhapi. Thousands of refugees displaced from East Pakistan and later resettled in Dandakaranya had begun migrating to the island in search of land and belonging.
+
+<br><br>
+
+The news awakened Nirmal's curiosity and idealism. The stories he heard in Kumirmari eventually led him to visit Morichjhapi, where he witnessed the refugees' efforts to build a cooperative settlement and later documented the tragedy that followed.
+
+<br><br>
+
+Kumirmari therefore serves as a threshold between memory and history, linking Nirmal's intellectual journey to the larger story of Morichjhapi.
+`);
+                }
+
+            }).addTo(memoryLayer);
+
+        }
+
+    });
+
+});
+   /* ================= NIRMAL'S JOURNEY : MEMORY ROUTE ================= */
+
+var nirmalJourney = L.polyline([
+    [22.08918, 88.90773],   // Lusibari
+    [22.20608, 88.93613],   // Kumirmari
+    [22.10555, 88.93424]    // Morichjhapi
+
+],{
+    color:"#4169E1",
+    weight:3,
+    dashArray:"8,8"
+});
+
+nirmalJourney.bindPopup(`
+<b>📖 Nirmal's Journey</b><br><br>
+
+Lusibari → Kumirmari → Morichjhapi
+
+<br><br>
+
+After retiring from teaching, Nirmal travelled from Lusibari to Kumirmari with Horen. During this journey he listened to local stories of the tide country and read passages from François Bernier's seventeenth-century travel narrative.
+
+<br><br>
+
+It was in Kumirmari that Nirmal first heard of the refugee settlement at Morichjhapi. The stories of thousands of refugees attempting to build a new life in the Sundarbans deeply moved him.
+
+<br><br>
+
+His subsequent visits to Morichjhapi transformed him from an observer into a witness. Through his notebooks and letters, Nirmal preserved the memory of the settlers' hopes, struggles, and eventual tragedy.
+
+<br><br>
+
+This route traces the intellectual and emotional journey that led Nirmal to document one of the most significant historical events represented in <i>The Hungry Tide</i>.
+`);
+
+memoryLayer.addLayer(nirmalJourney);
+  
+/* ================= PIYA'S DOLPHIN EXPEDITION ================= */
+
+var piyaDolphinRoute = L.polyline([
+    [22.08918, 88.90773],   // Lusibari
+    [21.93696, 88.90604],   // Garjantola
+    [21.81000, 89.04000],   // Gerafitola (approx.)
+    [21.75236, 89.05097]    // Mohona / Near Sea
+],{
+    color:"#2E7D32",
+    weight:4,
+    dashArray:"8,8"
+});
+
+piyaDolphinRoute.bindPopup(`
+<b>🐬 Piya's Dolphin Expedition</b><br><br>
+
+<b>Route:</b> Lusibari → Garjantola → Mohona (Near the Sea)
+
+<br><br>
+
+This route traces Piya Roy's ecological fieldwork in the Sundarbans. Assisted by Fokir, she follows the movements of river dolphins and studies their behaviour within the intricate network of rivers, khals, and estuarine waters that shape the tide country.
+
+<br><br>
+
+At Garjantola, Piya encounters a mother dolphin and calf and begins to understand the ecological knowledge possessed by local fishing communities. Fokir's intimate understanding of the waterways and dolphin habitats complements Piya's scientific research.
+
+<br><br>
+
+As the expedition moves toward the open waters near the sea, Piya records unusual dolphin behaviour and reflects on earlier scientific studies of river dolphins. These observations eventually alert her to changing environmental conditions and the approach of a devastating cyclone.
+
+<br><br>
+
+The journey brings together scientific inquiry, traditional ecological knowledge, animal migration, and the fragile ecology of the Sundarbans. It also marks the development of the relationship between Piya and Fokir through their shared engagement with the riverine landscape.
+
+<br><br>
+
+<b>Themes:</b> Ecology, Dolphin Migration, Traditional Ecological Knowledge, Environmental Change, Human–Nature Relationships.
+`);
+
+ecologyLayer.addLayer(piyaDolphinRoute);
+
+    /* ================= GERAFITOLA ================= */
+
+var gerafitola = L.circleMarker([21.81000, 89.04000], {
+    radius: 8,
+    color: "#2E7D32",
+    fillColor: "#66BB6A",
+    fillOpacity: 0.8,
+    weight: 2
+});
+
+gerafitola.bindPopup(`
+<b>🐬 Gerafitola</b><br><br>
+
+During their expedition through the Sundarbans, Piya and Fokir stopped at Gerafitola while tracking river dolphins.
+
+<br><br>
+
+Here Piya observed a Gangetic Dolphin (<i>Platanista gangetica</i>) displaying unusual behaviour. Unable to explain these movements, she recalled scientific research suggesting that river dolphins are highly sensitive to changes in atmospheric pressure.
+
+<br><br>
+
+The unusual behaviour of the dolphins became an important ecological indicator of environmental change and the approaching cyclone.
+
+<br><br>
+
+Gerafitola also appears in Nirmal and Horen's journey. While reading François Bernier's travel narrative, Nirmal learned of a rare moon rainbow. Horen believed the location described by Bernier was Gerafitola, the only place in the region where such a spectacle could be seen on a full-moon night.
+
+<br><br>
+
+<b>Themes:</b> Ecology, River Dolphins, Environmental Change, Scientific Observation, Cultural Memory.
+`);
+
+gerafitola.addTo(ecologyLayer);
+
+    /* ================= GERAFITOLA : ECOLOGY AND ENVIRONMENTAL OBSERVATION ================= */
+
+var gerafitola = L.circleMarker([21.81000, 89.04000],{
+    radius:8,
+    color:"#2E7D32",
+    fillColor:"#66BB6A",
+    fillOpacity:0.8,
+    weight:2
+});
+
+gerafitola.bindPopup(`
+<b>🐬 Gerafitola: Dolphins and Environmental Knowledge</b><br><br>
+
+During their expedition through the Sundarbans, Piya and Fokir stopped at Gerafitola while tracking river dolphins.
+
+<br><br>
+
+Here Piya observed a Gangetic Dolphin (<i>Platanista gangetica</i>) displaying unusual behaviour. Unable to explain the movement patterns, she recalled the research of Georges Pilleri, whose studies suggested that river dolphins are highly sensitive to changes in atmospheric pressure.
+
+<br><br>
+
+The unusual behaviour of the dolphins became an important ecological indicator, helping Piya recognize the environmental changes that signalled the approach of a severe cyclone.
+
+<br><br>
+
+Gerafitola demonstrates the close relationship between animal behaviour, environmental change, and scientific observation in <i>The Hungry Tide</i>.
+
+<br><br>
+
+Nirmal and Horen also associate this place with François Bernier's seventeenth-century travel narrative describing a rare moon rainbow. Horen believed that Bernier's account referred to Gerafitola, one of the few places in the tide country where such a phenomenon could be witnessed during a full moon.
+
+<br><br>
+
+<b>Themes:</b> Ecology, River Dolphins, Environmental Change, Scientific Observation, Traditional Knowledge, Cultural Memory.
+`);
+
+gerafitola.addTo(ecologyLayer);
+/* ================= GOSABA : HAMILTON ESTATE ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Gosaba"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#00008B",
+                        fillColor:"#4169E1",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+                    <b>🏝️ Gosaba: Hamilton's Cooperative Settlement</b><br><br>
+
+                    Gosaba formed the centre of Sir Daniel Hamilton's ambitious settlement project in the Sundarbans. Beginning in 1903, Hamilton purchased thousands of acres of forested land and established a cooperative community that included Gosaba, Satjelia, Rangabelia, Lusibari, Jameshpur, Annapur, and Emilybari.
+
+                    <br><br>
+
+                    The settlement sought to create a self-sufficient society based on cooperation rather than caste hierarchy. Settlers arrived from different regions of Bengal, Orissa, and the Santhal Parganas, transforming the mangrove wilderness into inhabited land through collective labour.
+
+                    <br><br>
+
+                    Gosaba became an important centre of administration, agriculture, trade, and community life within the Hamilton Estate. The project represented an early experiment in rural reconstruction and social reform in the tide country.
+
+                    <br><br>
+
+                    In <i>The Hungry Tide</i>, the history of Hamilton's settlement survives as part of the cultural memory of the Sundarbans, reflecting the region's long history of migration, settlement, and adaptation to a challenging environment.
+
+                    <br><br>
+
+                    <b>Themes:</b> Settlement, Cultural Memory, Migration, Cooperative Society, Hamilton Estate.
+                    `);
+
+                }
+
+            }).addTo(memoryLayer);
+
+        }
+
+    });
+
+});
+    
+/* ================= KOLKATA BOTANICAL GARDEN : HISTORY OF CETACEAN RESEARCH ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Kolkata Botanica Garden"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#2E7D32",
+                        fillColor:"#66BB6A",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+                    <b>🐬 Kolkata Botanical Garden: Origins of Dolphin Research</b><br><br>
+
+                    In the nineteenth century, the Botanical Garden in Calcutta became an important centre for natural history and zoological research.
+
+                    <br><br>
+
+                    William Roxburgh, one of the Garden's leading naturalists, published a landmark study in 1801 describing the Gangetic Dolphin. He named the species <i>Delphinus gangeticus</i>, one of the earliest scientific descriptions of a river dolphin.
+
+                    <br><br>
+
+                    Later zoological research revealed that the animal belonged to the genus <i>Platanista</i>, and it came to be classified as <i>Platanista gangetica</i>.
+
+                    <br><br>
+
+                    For Piya Roy, this history represents the beginning of a long scientific effort to understand the dolphins of the Ganges–Brahmaputra delta and the waters of the Sundarbans.
+
+                    <br><br>
+
+                    <b>Themes:</b> Ecology, Cetacean Research, Scientific Knowledge, Gangetic Dolphin, Environmental History.
+                    `);
+
+                }
+
+            }).addTo(ecologyLayer);
+
+        }
+
+    });
+
+});
+/* ================= SALT LAKE : THE LOST HISTORY OF THE IRRAWADDY DOLPHIN ================= */
+
+fetch("Salt Lake.geojson")
+.then(response => response.json())
+.then(data => {
+
+    L.geoJSON(data, {
+
+        style: {
+            color: "#2E7D32",
+            weight: 2,
+            fillColor: "#66BB6A",
+            fillOpacity: 0.4
+        },
+
+        onEachFeature: function(feature, layer){
+
+            layer.bindPopup(`
+            <b>🌊 Salt Lake: The Lost History of the Irrawaddy Dolphin</b><br><br>
+
+            In 1852, an unusually high tide flooded the wetlands surrounding Calcutta. As the waters receded, reports spread of a large marine creature trapped within the Salt Lake wetlands.
+
+            <br><br>
+
+            Edward Blyth, Superintendent of the Calcutta Botanical Garden, investigated the animal and identified it as a pilot whale. Later discoveries revealed that the specimen belonged to the genus <i>Orcaella</i>, now known as the Irrawaddy Dolphin (<i>Orcaella brevirostris</i>).
+
+            <br><br>
+
+            While researching dolphin history, Piya reflects on this episode as a significant moment in the scientific understanding of South Asia's aquatic mammals.
+
+            <br><br>
+
+            Salt Lake demonstrates how tidal movements, changing environments, and scientific interpretation shape human knowledge of the natural world.
+
+            <br><br>
+
+            <b>Themes:</b> Ecology, Cetacean History, Irrawaddy Dolphin, Environmental Change, Scientific Discovery.
+            `);
+
+        }
+
+    }).addTo(ecologyLayer);
+
+});
+var encounterZone = L.circleMarker([22.00796, 88.73735],{
+    radius:8,
+    color:"#2E7D32",
+    fillColor:"#66BB6A",
+    fillOpacity:0.8,
+    weight:2
+});
+
+encounterZone.bindPopup(`
+<b>🐬 Encounter Zone (Approximate)</b><br><br>
+
+This marker represents the probable area where Piya Roy encounters Fokir and Tutul during her first dolphin survey in the Sundarbans.<br><br>
+
+After obtaining permission from the Forest Department at Canning, Piya joins an official expedition accompanied by a forest guard and Mejda. The expedition fails to locate dolphins until she encounters Fokir, whose knowledge of the waterways transforms her research.<br><br>
+
+Following an accident in the river, Fokir rescues Piya. She chooses to leave the official expedition and accompany him instead.<br><br>
+
+<b>Themes:</b> Traditional Ecological Knowledge, Ecology, Human–Environment Interaction.
+`);
+
+encounterZone.addTo(ecologyLayer);    
+/* ================= CHAMPAHATI : ECOLOGY ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "Champahati"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#2E7D32",
+                        fillColor:"#66BB6A",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+                    <b>🚉 Champahati</b><br><br>
+
+                    Champahati forms part of Piya Roy's railway journey from Calcutta to Canning.
+
+                    <br><br>
+
+                    After meeting Kanai Dutt at Dhakuria Station, Piya travels through Champahati on her way to Canning, the gateway to the Sundarbans.
+
+                    <br><br>
+
+                    The station marks a transitional space between metropolitan Calcutta and the riverine landscapes of the tide country.
+
+                    <br><br>
+
+                    <b>Themes:</b> Mobility, Transition, Ecology, Journey to the Sundarbans.
+                    `);
+
+                }
+
+            }).addTo(ecologyLayer);
+
+        }
+
+    });
+
+});    
+/* ================= PIYA'S RAILWAY JOURNEY ================= */
+
+var piyaRailRoute = L.polyline([
+    [22.50812, 88.37256],   // Dhakuria Station
+    [22.40272, 88.49161],   // Champahati
+    [22.31490, 88.66270]    // Canning
+],{
+    color:"#8B4513",
+    weight:4
+});
+
+piyaRailRoute.bindPopup(`
+<b>🚉 Piya's Railway Journey</b><br><br>
+
+Dhakuria Station → Champahati → Canning
+
+<br><br>
+
+Piya's entry into the Sundarbans begins through the suburban railway network of Kolkata. Meeting Kanai Dutt at Dhakuria Station, she travels via Champahati toward Canning, the principal gateway to the tide country.
+
+<br><br>
+
+This route represents the transition from metropolitan space to the ecological frontier of the Sundarbans.
+
+<br><br>
+
+<b>Themes:</b> Mobility, Transition, Gateway to the Sundarbans.
+`);
+
+ecologyLayer.addLayer(piyaRailRoute);
+
+    /* ================= PIYA'S RIVER JOURNEY ================= */
+
+var piyaRiverRoute = L.polyline([
+    [22.31490, 88.66270],   // Canning
+    [22.00796, 88.73735],   // Encounter Zone
+    [21.93696, 88.90604],   // Garjantola
+    [22.08918, 88.90773]    // Lusibari
+],{
+    color:"#2E7D32",
+    weight:4,
+    dashArray:"8,8"
+});
+
+piyaRiverRoute.bindPopup(`
+<b>🐬 Piya's River Journey</b><br><br>
+
+Canning → Encounter Zone → Garjantola → Lusibari
+
+<br><br>
+
+After reaching Canning, Piya enters the waterways of the Sundarbans with a Forest Department expedition.
+
+<br><br>
+
+Her encounter with Fokir transforms the journey from an official scientific survey into an exploration guided by traditional ecological knowledge.
+
+<br><br>
+
+Travelling through the rivers and tidal channels, she reaches Garjantola and later Lusibari, gaining a deeper understanding of the ecology and culture of the tide country.
+
+<br><br>
+
+<b>Themes:</b> Ecology, Dolphin Research, Traditional Ecological Knowledge, Human–Environment Interaction.
+`);
+
+ecologyLayer.addLayer(piyaRiverRoute);
+
+    var canningGateway = L.circleMarker([22.31490,88.66270],{
+    radius:10,
+    color:"#000",
+    fillColor:"#FFD700",
+    fillOpacity:0.9,
+    weight:2
+});
+/* ================= DHAKURIA STATION ================= */
+
+fetch("All places.geojson")
+.then(response => response.json())
+.then(data => {
+
+    data.features.forEach(function(feature){
+
+        if(feature.properties.name === "DHakuria Station"){
+
+            L.geoJSON(feature,{
+
+                pointToLayer: function(feature, latlng){
+                    return L.circleMarker(latlng,{
+                        radius:8,
+                        color:"#8B4513",
+                        fillColor:"#CD853F",
+                        fillOpacity:0.8,
+                        weight:2
+                    });
+                },
+
+                onEachFeature: function(feature, layer){
+
+                    layer.bindPopup(`
+                    <b>🚉 Dhakuria Station</b><br><br>
+
+                    Dhakuria Station marks the beginning of Piya Roy's journey into the Sundarbans.
+
+                    <br><br>
+
+                    It is here that Piya first meets Kanai Dutt while travelling toward Canning. Their encounter initiates one of the central narrative journeys of <i>The Hungry Tide</i>.
+
+                    <br><br>
+
+                    As part of Kolkata's suburban railway network, Dhakuria functions as the point of departure from the metropolitan city into the ecological landscape of the tide country.
+
+                    <br><br>
+
+                    <b>Themes:</b> Mobility, Transition, Encounter, Gateway Journey.
+                    `);
+
+                }
+
+            }).addTo(ecologyLayer);
+
+        }
+
+    });
+
+});
+/* ================= BASANTI ================= */
+
+var basanti = L.circleMarker([22.19717, 88.71239],{
+    radius:8,
+    color:"#2E7D32",
+    fillColor:"#66BB6A",
+    fillOpacity:0.8,
+    weight:2
+});
+
+basanti.bindPopup(`
+<b>🌿 Basanti</b><br><br>
+
+Basanti functions as an important gateway to the inhabited islands of the Sundarbans.
+
+<br><br>
+
+While travelling to Lusibari, Kanai learns that the traditional route from Canning has become increasingly difficult because of ecological changes affecting the waterways.
+
+<br><br>
+
+The reduced navigability of channels associated with the Matla River system and changing environmental conditions have made travel through Basanti a more practical alternative.
+
+<br><br>
+
+In <i>The Hungry Tide</i>, Basanti illustrates how mobility in the Sundarbans is shaped by ecological processes such as sedimentation, tidal dynamics, and changing river flows.
+
+<br><br>
+
+<b>Themes:</b> Ecology, Mobility, Environmental Change, River Networks.
+`);
+
+basanti.addTo(ecologyLayer);
+
+    /* ================= KANAI'S JOURNEY TO LUSIBARI ================= */
+
+var kanaiJourney = L.polyline([
+    [22.55820, 88.28923],   // Kolkata
+    [22.50812, 88.37256],   // Dhakuria Station
+    [22.31490, 88.66270],   // Canning
+    [22.08918, 88.90773]    // Lusibari
+],{
+    color:"#8B4513",
+    weight:4,
+    dashArray:"8,8"
+});
+
+kanaiJourney.bindPopup(`
+<b>🚉 Kanai's Journey to Lusibari</b><br><br>
+
+<b>Route:</b> Kolkata → Dhakuria Station → Canning → Lusibari
+
+<br><br>
+
+Kanai Dutt travels from Kolkata to the Sundarbans after receiving an invitation from Nilima. His journey begins in the city and continues through Dhakuria Station toward Canning, the traditional gateway to the tide country.
+
+<br><br>
+
+At Dhakuria Station he encounters Piya Roy, whose research expedition becomes intertwined with his own visit to Lusibari.
+
+<br><br>
+
+The route illustrates the movement from metropolitan Kolkata into the riverine world of the Sundarbans, linking urban modernity with the ecological and cultural landscape of the tide country.
+
+<br><br>
+
+<b>Themes:</b> Mobility, Transition, Urban–Rural Connection, Gateway to the Sundarbans.
+`);
+
+memoryLayer.addLayer(kanaiJourney);
+
+    /* ================= ALTERNATIVE ROUTE VIA BASANTI ================= */
+
+var basantiRoute = L.polyline([
+    [22.55820, 88.28923],   // Kolkata
+    [22.50812, 88.37256],   // Dhakuria Station
+    [22.19717, 88.71239],   // Basanti
+    [22.08918, 88.90773]    // Lusibari
+],{
+    color:"#2E7D32",
+    weight:4
+});
+
+basantiRoute.bindPopup(`
+<b>🌿 Alternative Route via Basanti</b><br><br>
+
+<b>Route:</b> Kolkata → Dhakuria Station → Basanti → Lusibari
+
+<br><br>
+
+While travelling to the Sundarbans, Kanai learns that ecological changes have altered the navigability of traditional waterways associated with the Canning route.
+
+<br><br>
+
+Basanti emerges as a more practical gateway to Lusibari. The route reflects how mobility within the Sundarbans is shaped by changing river systems, tidal conditions, and environmental transformations.
+
+<br><br>
+
+Rather than simply representing movement through space, the route illustrates the influence of ecological processes on human travel and connectivity.
+
+<br><br>
+
+<b>Themes:</b> Ecology, Mobility, Environmental Change, River Networks, Spatial Adaptation.
+`);
+
+ecologyLayer.addLayer(basantiRoute);
+
+    var medina = L.circleMarker([24.5247,39.5692],{
+    radius:8,
+    color:"#B8860B",
+    fillColor:"#FFD700",
+    fillOpacity:0.8,
+    weight:2
+});
+    medina.bindPopup(`
+<b>🕌 Medina (Arabia)</b><br><br>
+
+According to the legend of Bon Bibi, the story begins in Medina, Arabia. Bon Bibi and her twin brother Shah Jangoli were born here and were chosen for a divine mission.
+
+<br><br>
+
+They were sent to the Country of Eighteen Tides (Bhatir Desh) to establish a balance between human habitation and the wilderness of the Sundarbans.
+
+<br><br>
+
+Their journey symbolizes the movement of stories, beliefs, and cultural traditions across regions and seas.
+
+<br><br>
+
+<b>Themes:</b> Mythic Migration, Sacred Geography, Cultural Exchange.
+`);
+    medina.addTo(mythLayer);
+
+fetch("Bhatir Desh.geojson")
+.then(response => response.json())
+.then(data => {
+
+    var bhatirDeshLayer = L.geoJSON(data,{
+        style:{
+            color:"#DAA520",
+            weight:2,
+            fillColor:"#FFD700",
+            fillOpacity:0.15
+        }
+    }).addTo(mythLayer);
+
+    // Get center of polygon
+    var bhatirDeshCenter = bhatirDeshLayer.getBounds().getCenter();
+
+    // Bon Bibi route
+    var bonBibiRoute = L.polyline([
+        [24.5247,39.5692], // Medina
+        [bhatirDeshCenter.lat,bhatirDeshCenter.lng]
+    ],{
+        color:"#DAA520",
+        weight:4,
+        dashArray:"10,6"
+    });
+
+    bonBibiRoute.addTo(mythLayer);
+
+});
+L.control.layers(
+null,
+{
+    "🟢 Ecological Habitat Networks": ecologyLayer,
+
+    "🔴 Migration & Mobility Networks": migrationLayer,
+
+    "🔵 Spatial & Cultural Memory": memoryLayer,
+        
+    "🟡 Bon Bibi Myth": mythLayer   
+},
+{
+    collapsed:false
+}
+).addTo(map);
+</script>
+
+</body>
+</html>
